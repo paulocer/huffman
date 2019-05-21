@@ -1,9 +1,9 @@
-Exception: STATUS_ACCESS_VIOLATION at eip=004011F9
-eax=00000001 ebx=00000000 ecx=80000008 edx=00000000 esi=612D937A edi=0028CD84
-ebp=0028CC78 esp=0028CC5C program=D:\cygwin\home\paulo\huffman\read_and_write_files\main.exe, pid 839, thread main
+Exception: STATUS_ACCESS_VIOLATION at eip=0040120A
+eax=00000000 ebx=00000080 ecx=00000000 edx=00000000 esi=0042E000 edi=0028CD84
+ebp=0028CC78 esp=0028CC5C program=D:\cygwin\home\huffman\read_and_write_files\main.exe, pid 482, thread main
 cs=0023 ds=002B es=002B fs=0053 gs=002B ss=002B
 Stack trace:
 Frame     Function  Args
-0028CC78  004011F9 (00000001, 0028CC9C, 800000D0, 6100AA98)
+0028CC78  0040120A (00000001, 0028CC9C, 800000D0, 6100AA98)
 0028CD28  6100AAFA (00000000, 0028CD84, 61009A90, 00000000)
 End of stack trace
