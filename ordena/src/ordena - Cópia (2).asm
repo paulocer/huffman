@@ -6,10 +6,10 @@
 ; To create executable:
 ;
 ; Using Linux and gcc:
-; nasm -f elf ordena.asm
-; gcc -o ordena ordena.o driver.c asm_io.o
+; nasm -f elf32 src/ordena.asm
+; gcc -m32 -o ordena src/ordena.o lib/driver.c lib/asm_io.o
 ;
-%include "asm_io.inc"
+%include "lib/asm_io.inc"
 ;
 ; initialized data is put in the .data segment
 ;
@@ -26,7 +26,6 @@ outmsg2 db    "Saida: ", 0
 ;
 segment .bss
 ;
-		num  resb 1
 		v1   resb 10
 		v2   resb 10
 ;
@@ -61,16 +60,16 @@ _asm_main:
 		mov		eax, outmsg1
 		call	print_string
 		
-;       mov ecx, 10
-;		mov ebx, 0
+        mov ecx, 10
+		mov ebx, 0
 		
-;		lp2:
-;		mov al, [v2 + ebx]
-;		call print_char
-;		add ebx, 1
-;		loop lp2
+		lp2:
+		mov al, [v1 + ebx]
+		call print_char
+		add ebx, 1
+		loop lp2
 
-;		call print_nl          ; print new-line -> <<<imprime uma nova linha>>>
+		call print_nl          ; print new-line -> <<<imprime uma nova linha>>>
 		
 		mov esi, v1
 		mov edi, v2
