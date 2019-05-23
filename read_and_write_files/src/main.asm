@@ -31,19 +31,19 @@ _asm_main:
 	mov ecx, 128
 	mov ebx, 0
 	
-	l1:
+	;l1:
 	
-	mov [vet_char + ebx], ebx
-	add ebx, 1
-	loop l1
+	;mov [vet_char + ebx], ebx
+	;add ebx, 1
+	;loop l1
     
-    mov esi, vet_char
+    mov esi, buffer
     cld 
     print:
     lodsb
-        ;cmp al, 0
+        cmp al, 0
         je exit
-		;movzx eax, al
+		movzx eax, al
 		;push eax
 		;push vet_char
 		;push vet_count
