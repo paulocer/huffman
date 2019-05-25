@@ -21,8 +21,8 @@ prompt1 db    "Ordenação de vetores: ", 0       ; don't forget nul terminator
 outmsg1 db    "Entrada   : ", 0
 outmsg2 db    "Frequência: ", 0
 outmsg3 db    "Saída     : ", 0
-v1		db		"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-v2		dd		 1  , 2  , 3  , 4  , 5  , 6  , 7  , 8  , 9  , 0
+vet_char		db		"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
+vet_count		dd		 3  , 5  , 6  , 9  , 0  , 1  , 8  , 2  , 7  , 4
 num		dd		10
 con		dd		4
 ;
@@ -59,7 +59,7 @@ _asm_main:
 		mov ebx, 0
 		
 		lp1:
-		mov al, [v1 + ebx]
+		mov al, [vet_char + ebx]
 		call print_char
 		add ebx, 1
 		loop lp1
@@ -73,7 +73,7 @@ _asm_main:
 		mov ebx, 0
 		
 		lp2:
-		mov eax, [v2 + ebx]
+		mov eax, [vet_count + ebx]
 		call print_int
 		add ebx, 4
 		loop lp2
@@ -85,23 +85,23 @@ _asm_main:
 		mov eax, 0
 		
 		l3:
-		mov edx, [v2 + eax]
+		mov edx, [vet_count + eax]
 		add eax, [con]
-		mov ebx, [v2 + eax]
+		mov ebx, [vet_count + eax]
 		cmp edx, ebx
 		jge salta
 		sub eax, [con]
-		mov [v2 + eax], ebx
+		mov [vet_count + eax], ebx
 		add eax, [con]
-		mov [v2 + eax], edx
+		mov [vet_count + eax], edx
 		cdq
 		idiv dword [con]
-		mov dl, [v1 + eax]
+		mov dl, [vet_char + eax]
 		sub eax, 1
-		mov bl, [v1 + eax]
-		mov [v1 + eax], dl
+		mov bl, [vet_char + eax]
+		mov [vet_char + eax], dl
 		add eax, 1
-		mov [v1 + eax], bl
+		mov [vet_char + eax], bl
 		imul dword [con]
 		
 		salta:
@@ -129,7 +129,7 @@ _asm_main:
 		mov ebx, 0
 		
 		lp4:
-		mov al, [v1 + ebx]
+		mov al, [vet_char + ebx]
 		call print_char
 		add ebx, 1
 		loop lp4
@@ -143,7 +143,7 @@ _asm_main:
 		mov ebx, 0
 		
 		lp5:
-		mov eax, [v2 + ebx]
+		mov eax, [vet_count + ebx]
 		call print_int
 		add ebx, 4
 		loop lp5
