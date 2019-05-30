@@ -4,12 +4,14 @@
 
 segment .data
   
-  buffer db "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",0 ;Quisque maximus eget est vitae semper. Vestibulum sed lectus eget metus ullamcorper bibendum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras venenatis tortor arcu, ut auctor mi feugiat non. Nulla ullamcorper lacinia rutrum. Sed id tellus posuere, semper tellus ut, pretium magna. Etiam tincidunt luctus tellus, id tristique erat euismod et. Donec quis sagittis enim, tincidunt interdum ligula. Fusce fermentum, enim sed ultrices sollicitudin, leo tellus tristique est, vel accumsan augue nisi non dolor. Nullam interdum imperdiet purus eu volutpat.",0
+  filename db "test.txt", 0
+  buflen dw 2048
   vet_count times 128 dd 0
   
 segment .bss
 
 	vet_char resb 128
+	buffer resb 2048 
 
 segment .text  
 
@@ -18,6 +20,12 @@ segment .text
     global  _asm_main
 		
 _asm_main:
+
+    push filename
+    push buffer
+    push buflen
+    call read_file
+    add esp, 12
     
 	mov ecx, 128
 	mov ebx, 0
@@ -71,7 +79,10 @@ _asm_main:
 	
 	L4:		
 	mov eax, [vet_count + ebx]
+	cmp eax, 0
+	je imprime
 	call print_int
+	imprime:
 	add ebx, 4
 	loop L4
 	
