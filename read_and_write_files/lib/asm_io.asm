@@ -9,6 +9,14 @@
 ;   nasm -f win32 -d COFF_TYPE asm_io.asm
 ; To assemble for Linux
 ;   nasm -f elf -d ELF_TYPE asm_io.asm
+; To assemble for Watcom
+;   nasm -f obj -d OBJ_TYPE -d WATCOM asm_io.asm
+; IMPORTANT NOTES FOR WATCOM
+;   The Watcom compiler's C library does not use the
+;   standard C calling convention. For example, the
+;   putchar() function gets its argument from the
+;   the value of EAX, not the stack.
+
 
 %define NL 10
 %define CF_MASK 00000001h
@@ -28,7 +36,16 @@
   %define _printf  printf
   %define _getchar getchar
   %define _putchar putchar
-  %define _fputs   fputs
+%endif
+
+;
+; Watcom puts underscores at end of label
+;
+%ifdef WATCOM
+  %define _scanf   scanf_
+  %define _printf  printf_
+  %define _getchar getchar_
+  %define _putchar putchar_
 %endif
 
 %ifdef OBJ_TYPE
@@ -75,7 +92,7 @@ segment .text
 	global	read_int, print_int, print_string, read_char
 	global  print_char, print_nl, sub_dump_regs, sub_dump_mem
         global  sub_dump_math, sub_dump_stack
-        extern  _scanf, _printf, _getchar, _putchar, _fputs
+        extern  _scanf, _printf, _getchar, _putchar
 
 read_int:
 	enter	4,0
@@ -146,9 +163,13 @@ print_char:
 	pusha
 	pushf
 
+%ifndef WATCOM
 	push	eax
+%endif
 	call	_putchar
+%ifndef WATCOM
 	pop	ecx
+%endif
 
 	popf
 	popa
@@ -161,10 +182,15 @@ print_nl:
 	pusha
 	pushf
 
+%ifdef WATCOM
+	mov	eax, 10		; WATCOM doesn't use the stack here
+%else
 	push	dword 10	; 10 == ASCII code for \n
+%endif
 	call	_putchar
+%ifndef WATCOM
 	pop	ecx
-
+%endif
 	popf
 	popa
 	leave

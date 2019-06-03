@@ -1,4 +1,3 @@
-
 ;
 ; file: ordena.asm
 ; ordena assembly program.
@@ -17,10 +16,10 @@ segment .data
 ;
 ; These labels refer to strings used for output
 ;
-prompt1 db    "Ordenação de vetores: ", 0       ; don't forget nul terminator
+prompt1 db    "Ordenacao de vetores: ", 0       ; don't forget nul terminator
 outmsg1 db    "Entrada   : ", 0
-outmsg2 db    "Frequência: ", 0
-outmsg3 db    "Saída     : ", 0
+outmsg2 db    "Frequencia: ", 0
+outmsg3 db    "Saida     : ", 0
 vet_char		db		"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
 vet_count		dd		 3  , 5  , 6  , 9  , 0  , 1  , 8  , 2  , 7  , 4
 num		dd		10
@@ -35,8 +34,8 @@ segment .bss
 ; code is put in the .text segment
 ;
 segment .text
-        global  _asm_main
-_asm_main:
+        global  asm_main
+asm_main:
         enter   0,0               ; setup routine
         pusha
 
