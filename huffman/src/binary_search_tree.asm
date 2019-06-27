@@ -78,14 +78,11 @@ insert:
     mov edi, [ebp + 12] ;tree
     mov esi, [ebp + 8]  ;num_nodes
     
-
-    
     cmp dword [edi], 0  ;verify if tree is null
     je empty  
     mov edx, [edi] 
     cmp ebx, [edx]       ; compare x with tree->value
-    jl insert_sub_tree_left
-;sub_tree right    
+    jl insert_sub_tree_left 	;sub_tree right    
     push ebx
     mov ecx, [edi]
     sub ecx, 4 ;get left child

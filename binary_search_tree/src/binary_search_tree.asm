@@ -60,7 +60,7 @@ create_node:
 	xor	ebx, ebx
 	int	80h
 
-	add	eax, 12	; reserve 12 bytes
+	add	eax, 13	; reserve 13 bytes
 	mov	ebx, eax
 	mov	eax, 45		; sys_brk
 	int	80h
