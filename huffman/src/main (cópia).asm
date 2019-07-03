@@ -19,7 +19,8 @@ segment .bss
 
 	buffer resb 2048 
 	vet_char resb 128
-	dic_huff resb 128
+	qtd_bits resd 128
+	cod_huff resd 128
     tree resd 1
     num_nodes resd 1
 
@@ -122,9 +123,7 @@ asm_main:
 		
 		continua:
 
-        call imprime_vetor
-		
-		mov ecx, 128
+        mov ecx, 128
 		mov edx, 0
 		mov ebx, 0
 		
@@ -243,50 +242,19 @@ asm_main:
 		call ler_em_pre_ordem
 		add esp, 8
 		call print_nl
-		mov eax, [dic]
-		cdq
-		idiv dword [con]
-		mov [con], eax
-		mov ecx, [con]
+		mov ecx, [dic]
 		mov ebx, 0
 
 		L6:
-		call imprime_dic
-		add ebx, 4
+;			mov al, [vet_char + ebx]
+;			call print_char
+;			call print_nl
+;			mov eax, [qtd_bits + ebx]
+;			call print_int
+;			call print_nl
+		call teste
+		add ebx, 1
 		loop L6
-		
-		call print_nl
-		mov ecx, [con]
-		mov ebx, 0
-		
-		L7:
-		call imprime_cod
-		add ebx, 4
-		loop L7
-		
-		L8:
-    	call print_nl
-		mov esi, buffer 
-    	cld
-		codifica:
-		lodsb
-		cmp al, 0
-		je sair
-			mov ebx, 0
-			mov ecx, [con]
-			pesquisa:
-			mov edi, [dic_huff + ebx]
-			cmp al, [edi - 1]
-			je imp_comprimido
-			add ebx, 4
-			loop pesquisa
-			jmp codifica
-			imp_comprimido:
-			call comprime
-			jmp codifica
-		sair:
-		call print_nl
-		call print_nl
 				
 leave                     
     ret
@@ -299,33 +267,25 @@ ler_em_pre_ordem:
         mov edi, [ebp + 8] ;endereço da árvore
         cmp edi, 0
         je nao_imprime
+			mov ebx, [dic]
 			mov al, [edi - 5]
 			cmp al, ""
 			je proximo_no
 			mov eax, [edi - 4]
 			call print_int
-			call cria_no_char
-			push esi
-			mov esi, eax
             mov al, '-'
             call print_char
 			mov al, [edi - 5]
-			mov [esi - 1], al
+			mov [vet_char + ebx], al
             call print_char
             mov al, '-'
             call print_char
 			mov eax, ecx
-			mov [esi - 5], ecx
+			mov [qtd_bits + ebx], ecx
 			call print_int
             mov al, '-'
             call print_char
-			mov [esi - 9], edx
-			mov ebx, [dic]
-			mov [dic_huff + ebx], esi
-			add ebx, 4
-			mov [dic], ebx
-			pop esi
-			
+			mov [cod_huff + ebx], edx
 			mov ebx, edx
 			mov ecx, 32
 			bit_a_bit:
@@ -337,12 +297,15 @@ ler_em_pre_ordem:
 			call print_int
 			loop bit_a_bit
 			call print_nl
+			mov ebx, [dic]
+			add ebx, 1
+			mov [dic], ebx
 			
 			proximo_no:
             push dword [edi - 13]; no da esquerda
 			shl edx, 1
 			add ecx, 1
-            call ler_em_pre_ordem; lê o no da esquerda
+            call ler_em_pre_ordem
 			sub ecx, 1
 			shr edx, 1
             add esp, 4
@@ -351,7 +314,7 @@ ler_em_pre_ordem:
 			shl edx, 1
 			add ecx, 1
 			or edx, 0000000000000000000000000000001b
-            call ler_em_pre_ordem; lê o no da direita
+            call ler_em_pre_ordem
 			sub ecx, 1
 			shr edx, 1
             add esp, 4
@@ -379,17 +342,21 @@ cria_no_char:
     pop ebp 
 ret
 
-imprime_dic:
-	mov esi, [dic_huff + ebx]
-	mov al, [esi - 1]
-	call print_char
-	mov al, '-'
-	call print_char
-	mov eax, [esi - 5]
+teste:
+	call print_nl
+	mov eax, ebx
 	call print_int
 	mov al, '-'
 	call print_char
-	mov edx, [esi - 9]
+	mov al, [vet_char + ebx]
+	call print_char
+	mov al, '-'
+	call print_char
+	mov eax, [qtd_bits + ebx]
+	call print_int
+	mov al, '-'
+	call print_char
+	mov edx, [cod_huff + ebx]
 	push ecx
 	mov ecx, 32
 	verifica_bit:
@@ -402,79 +369,4 @@ imprime_dic:
 	loop verifica_bit
 	pop ecx
 	call print_nl
-ret
-
-imprime_cod:
-	mov esi, [dic_huff + ebx]
-	mov al, [esi - 1]
-	call print_char
-	mov al, '-'
-	call print_char
-	mov eax, [esi - 5]
-	call print_int
-	mov al, '-'
-	call print_char
-	mov edx, [esi - 9]
-	push ecx
-	mov ecx, 32
-	sub ecx, [esi - 5]
-	cmp ecx, 0
-	je coda_bit
-	shl edx, cl
-	mov ecx, [esi - 5]
-	coda_bit:
-	mov eax, 0
-	shl edx, 1
-	jnc coda ; impŕime '0'
-	mov eax, 1 ; imprime '1'
-	coda:
-	call print_int
-	loop coda_bit
-	pop ecx
-	call print_nl
-ret
-
-comprime:
-	mov edx, [edi - 9]
-	push edx
-	push ecx
-	mov ecx, 32
-	sub ecx, [edi - 5]
-	cmp ecx, 0
-	je imp_huffman
-	shl edx, cl
-	mov ecx, [edi - 5]
-	imp_huffman:
-	mov eax, 0
-	shl edx, 1
-	jnc cod_huffman ; impŕime '0'
-	mov eax, 1 ; imprime '1'
-	cod_huffman:
-	call print_int
-	loop imp_huffman
-	pop ecx
-	pop edx
-ret
-
-imprime_vetor:
-		mov ecx, 128
-		sub ecx, 1
-		mov ebx, 0
-		mov edx, 0
-		
-		lista:
-		mov eax, [vet_count + edx]
-		cmp eax, 0
-		je nao_imp
-		mov al, [vet_char + ebx]
-		call print_char
-		mov al, "-"
-		call print_char
-		mov eax, [vet_count + edx]
-		call print_int
-		call print_nl
-		nao_imp:
-		add ebx, 1
-		add edx, 4
-		loop lista
 ret
